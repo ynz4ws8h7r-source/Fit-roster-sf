@@ -1,0 +1,9 @@
+{
+  "name": "Fit Roster - Fitness & Food Tracker",
+  "short_name": "Fit Roster",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101915",
+  "theme_color": "#14251f",
+  "description": "A balanced 30-day fitness, food and recovery tracker."
+}

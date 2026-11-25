@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14251f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fit Roster">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Fit Roster</title>
+<style>
+:root{color-scheme:dark;--bg:#101915;--panel:#1a2922;--panel2:#22352b;--text:#f3f7f3;--muted:#b5c4ba;--green:#8cdaa7;--line:#34483c;--accent:#b7f0c7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{padding:22px 18px 16px;background:linear-gradient(140deg,#1b392b,#14251f)}h1{font-size:27px;margin:0 0 5px}header p{margin:0;color:var(--muted);font-size:14px}
+main{max-width:680px;margin:auto;padding:15px 14px 35px}.tabs{display:flex;gap:8px;overflow:auto;margin:0 0 14px}.tab,button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:12px;padding:11px 14px;font-weight:650}.tab.active{background:var(--green);color:#102017;border-color:var(--green)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.muted{color:var(--muted)}.small{font-size:13px}.big{font-size:29px;font-weight:800}.bar{height:9px;background:#34483c;border-radius:20px;overflow:hidden;margin:10px 0}.bar>div{height:100%;background:var(--green);width:0%}
+h2{font-size:19px;margin:0 0 12px}h3{font-size:16px;margin:0 0 7px}.day{padding:12px 0;border-top:1px solid var(--line)}.day:first-child{border-top:0}.tag{font-size:12px;background:#2b4435;color:var(--accent);padding:5px 8px;border-radius:20px;white-space:nowrap}
+label.check{display:flex;align-items:flex-start;gap:10px;padding:9px 0;line-height:1.35}input[type=checkbox]{width:20px;height:20px;accent-color:#8cdaa7;flex-shrink:0;margin:0}
+button.primary{background:var(--green);color:#102017;border:0}button.danger{background:#452b2b;border-color:#754747;color:#ffdede}button:active{transform:scale(.98)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--panel2);border-radius:12px;padding:12px}.stat strong{display:block;font-size:23px}.hidden{display:none!important}
+.meal{padding:10px 0;border-top:1px solid var(--line)}.meal:first-of-type{border-top:0}.meal b{display:block;color:var(--accent);font-size:12px;letter-spacing:.04em;margin-bottom:4px}
+.notice{background:#293b30;border-radius:12px;padding:12px;color:#d8e8dc;font-size:13px;line-height:1.45}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:10px}
+@media(min-width:600px){main{padding-top:22px}.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>Fit Roster</h1><p>A balanced 30-day fitness, food and recovery tracker</p></header>
+<main>
+<nav class="tabs">
+<button class="tab active" data-tab="home">Overview</button>
+<button class="tab" data-tab="plan">30-day plan</button>
+<button class="tab" data-tab="food">Food & habits</button>
+<button class="tab" data-tab="goals">Goals</button>
+</nav>
+<section id="home">
+<div class="card">
+ <div class="row"><div><div class="muted small">CURRENT MONTH</div><h2 id="monthTitle">Month 1</h2></div><span class="tag" id="dayLabel">Day 1 of 30</span></div>
+ <div class="big" id="percent">0%</div><div class="muted small">Overall checklist progress</div><div class="bar"><div id="progressBar"></div></div>
+ <div class="grid">
+  <div class="stat"><strong id="exerciseCount">0/30</strong><span class="muted small">Exercise days</span></div>
+  <div class="stat"><strong id="foodCount">0/30</strong><span class="muted small">Healthy-habit days</span></div>
+  <div class="stat"><strong id="streak">0</strong><span class="muted small">Days completed in a row</span></div>
+  <div class="stat"><strong id="remaining">30</strong><span class="muted small">Days left to tick</span></div>
+ </div>
+</div>
+<div class="card"><h2>Today's session</h2><div id="todayWorkout"></div><p class="muted small">If you are tired, unwell, sore or have a busy school/cadet day, take a rest day instead. Don't try to make up missed sessions.</p><button class="primary" id="todayButton">Open today's day</button></div>
+<div class="notice">This is a general wellbeing plan for a growing teenager, not military selection training. Eat enough, take rest days, and ask a parent/guardian or qualified gym instructor for help with gym equipment.</div>
+</section>
+<section id="plan" class="hidden">
+<div class="card"><h2>30-day exercise roster</h2><p class="muted small">Tick a day when you've completed the activity or chosen a sensible recovery alternative.</p><div id="days"></div></div>
+</section>
+<section id="food" class="hidden">
+<div class="card"><h2>Simple 7-day meal rotation</h2><p class="muted small">Repeat this menu across the month, swapping foods to suit your tastes and what your family has available. Portions are flexible: eat enough to feel satisfied and have extra snacks when hungry.</p><div id="menu"></div></div>
+<div class="card"><h2>Daily healthy habits</h2><p class="muted small">Tick these as habits, not strict rules. Missing one doesn't mean you've failed.</p><div id="habits"></div></div>
+</section>
+<section id="goals" class="hidden">
+<div class="card"><h2>My goals for this month</h2>
+<label class="check"><input type="checkbox" data-goal="run"> Build a comfortable, steady running routine</label>
+<label class="check"><input type="checkbox" data-goal="swim"> Practise relaxed swimming and good technique</label>
+<label class="check"><input type="checkbox" data-goal="strength"> Learn safe full-body strength exercises</label>
+<label class="check"><input type="checkbox" data-goal="food"> Eat regular, varied meals and snacks</label>
+<label class="check"><input type="checkbox" data-goal="sleep"> Make time for 8–10 hours of sleep</label>
+<label class="check"><input type="checkbox" data-goal="recovery"> Respect rest and recovery days</label>
+</div>
+<div class="card"><h2>Reset for a new month</h2><p class="muted small">When you've finished the 30-day roster, this starts a fresh month and clears this month's ticks. Your plan stays the same.</p><button class="danger" id="reset">Reset month</button></div>
+</section>
+<footer>Fit Roster · Progress is about consistency, not perfection.</footer>
+</main>
+<script>
+const plan=[
+["Easy run","15–20 minutes at a comfortable, talkable pace."],
+["Full-body gym A","2 sets each: bodyweight squats (10), push-ups (6–10), seated cable row (10), glute bridges (12), plank (20 sec). Light resistance, supervised."],
+["Swimming","15–20 minutes of relaxed swimming in a supervised pool."],
+["Recovery","Easy walk and gentle mobility, about 20 minutes."],
+["Full-body gym B","2 sets each: step-ups (8 each leg), light chest press (10), light lat pulldown (10), bird dogs (8 each side), side plank (15 sec each side). Supervised."],
+["Outdoor activity","Cycling, hiking, football or another enjoyable activity, about 30 minutes."],
+["Rest","Rest day. Gentle everyday movement is fine."]
+];
+const activities=[
+[0,"Easy run","15–20 min"],[1,"Full-body gym A","35 min"],[2,"Swimming","15–20 min"],[3,"Recovery walk & mobility","20 min"],[4,"Full-body gym B","35 min"],[5,"Outdoor activity","30 min"],[6,"Rest","Recovery"],
+[0,"Easy run","20 min"],[1,"Full-body gym A","35 min"],[2,"Swimming","20 min"],[3,"Recovery walk & mobility","20 min"],[4,"Full-body gym B","35 min"],[5,"Outdoor activity","35 min"],[6,"Rest","Recovery"],
+[0,"Easy run","20–25 min"],[1,"Full-body gym A","35 min"],[2,"Swimming","20–25 min"],[3,"Recovery walk & mobility","20 min"],[4,"Full-body gym B","35 min"],[5,"Outdoor activity","40 min"],[6,"Rest","Recovery"],
+[0,"Easy run","25 min"],[1,"Full-body gym A","35 min"],[2,"Swimming","25 min"],[3,"Recovery walk & mobility","20 min"],[4,"Full-body gym B","35 min"],[5,"Outdoor activity","40–45 min"],[6,"Rest","Recovery"],
+[0,"Easy run","20–25 min"],[2,"Enjoyable swim or outdoor activity","20–30 min"]
+];
+const meals=[
+["Monday","Porridge, banana and milk","Chicken sandwich, yoghurt and apple","Chicken, rice and vegetables","Peanut butter toast"],
+["Tuesday","Scrambled eggs and toast","Tuna pasta and fruit","Beef mince, potatoes and vegetables","Greek yoghurt and berries"],
+["Wednesday","Wholegrain cereal and milk","Chicken wrap and fruit","Salmon, potatoes and broccoli","Banana and nuts"],
+["Thursday","Porridge and berries","Egg sandwich and yoghurt","Chicken pasta and vegetables","Cheese and crackers"],
+["Friday","Eggs on toast and fruit","Jacket potato with beans and cheese","Homemade burger, potatoes and salad","Yoghurt and banana"],
+["Saturday","Pancakes, fruit and yoghurt","Chicken sandwich","Chicken curry and rice","Toast and peanut butter"],
+["Sunday","Eggs, toast and milk","Cheese and chicken wrap","Roast dinner with vegetables","Fruit and yoghurt"]
+];
+const habitNames=["Eat regular breakfast, lunch and dinner","Include protein-containing foods in meals","Eat fruit and vegetables","Drink water regularly","Eat enough and have extra food when hungry","Have a snack when hungry","Aim for 8–10 hours of sleep","Allow time for rest and recovery"];
+const KEY="fitRosterTeen_v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{month:1,exercise:[],food:[],habits:{},goals:{}};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function dayIndex(){return Math.min(29,Math.floor((state.exercise.length+state.food.length)/2))}
+function render(){
+ document.getElementById("monthTitle").textContent="Month "+state.month;
+ const done=state.exercise.length+state.food.length,pct=Math.round(done/60*100);
+ document.getElementById("percent").textContent=pct+"%";document.getElementById("progressBar").style.width=pct+"%";
+ document.getElementById("exerciseCount").textContent=state.exercise.length+"/30";
+ document.getElementById("foodCount").textContent=state.food.length+"/30";
+ document.getElementById("remaining").textContent=30-state.exercise.length;
+ let streak=0;for(let i=0;i<30;i++){if(state.exercise.includes(i)&&state.food.includes(i))streak++;else break}
+ document.getElementById("streak").textContent=streak;
+ let today=Math.min(29,state.exercise.length);
+ document.getElementById("dayLabel").textContent="Day "+(today+1)+" of 30";
+ const a=activities[today];document.getElementById("todayWorkout").innerHTML="<h3>"+a[1]+" · "+a[2]+"</h3><p class='muted small'>"+(a[0]===6?plan[6][1]:"Follow the session details in the 30-day plan.")+"</p>";
+ document.getElementById("days").innerHTML=activities.map((a,i)=>`<div class="day"><div class="row"><b>Day ${i+1} · ${a[1]}</b><span class="tag">${a[2]}</span></div><label class="check"><input type="checkbox" data-ex="${i}" ${state.exercise.includes(i)?"checked":""}> Exercise / recovery completed</label><label class="check"><input type="checkbox" data-food="${i}" ${state.food.includes(i)?"checked":""}> Ate regularly and looked after my nutrition</label>${a[0]===0?`<p class="muted small">${i<7? "Keep the pace comfortable; walking breaks are fine.": "Follow the comfortable running progression; don't push through fatigue."}</p>`:""}</div>`).join("");
+ document.getElementById("menu").innerHTML=meals.map(m=>`<div class="meal"><h3>${m[0]}</h3><b>BREAKFAST</b>${m[1]}<b style="margin-top:8px">LUNCH</b>${m[2]}<b style="margin-top:8px">DINNER</b>${m[3]}<b style="margin-top:8px">SNACK IDEA</b>${m[4]}</div>`).join("");
+ document.getElementById("habits").innerHTML=habitNames.map((h,i)=>`<label class="check"><input type="checkbox" data-habit="${i}" ${state.habits[i]?"checked":""}>${h}</label>`).join("");
+ document.querySelectorAll("[data-goal]").forEach(el=>el.checked=!!state.goals[el.dataset.goal]);
+ document.querySelectorAll("[data-ex]").forEach(el=>el.addEventListener("change",()=>{let i=+el.dataset.ex;state.exercise=el.checked?[...new Set([...state.exercise,i])]:state.exercise.filter(x=>x!==i);save()}));
+ document.querySelectorAll("[data-food]").forEach(el=>el.addEventListener("change",()=>{let i=+el.dataset.food;state.food=el.checked?[...new Set([...state.food,i])]:state.food.filter(x=>x!==i);save()}));
+ document.querySelectorAll("[data-habit]").forEach(el=>el.addEventListener("change",()=>{state.habits[el.dataset.habit]=el.checked;localStorage.setItem(KEY,JSON.stringify(state))}));
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["home","plan","food","goals"].forEach(id=>document.getElementById(id).classList.toggle("hidden",id!==b.dataset.tab))}));
+document.getElementById("todayButton").addEventListener("click",()=>document.querySelector('[data-tab="plan"]').click());
+document.querySelectorAll("[data-goal]").forEach(el=>el.addEventListener("change",()=>{state.goals[el.dataset.goal]=el.checked;localStorage.setItem(KEY,JSON.stringify(state))}));
+document.getElementById("reset").addEventListener("click",()=>{if(confirm("Start a new month? This clears the current month's progress ticks.")){state={month:state.month+1,exercise:[],food:[],habits:{},goals:{}};save();document.querySelector('[data-tab="home"]').click();}});
+render();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+</body></html>
